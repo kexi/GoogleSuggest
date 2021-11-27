@@ -3,9 +3,19 @@ import XCTest
 
 final class GoogleSuggestTests: XCTestCase {
     func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct
-        // results.
-        XCTAssertEqual(GoogleSuggest().text, "Hello, World!")
+        let exp = XCTestExpectation(description: "\(#function)")
+        let client = GoogleSuggest()
+        client.getSuggestionsBy(query: "tenki") { result in
+            print("result")
+            switch result {
+            case .success(let results):
+                XCTAssertTrue(results.count > 0)
+            case .failure(let error):
+                print(error)
+                XCTAssertTrue(false)
+            }
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 10.0)
     }
 }
